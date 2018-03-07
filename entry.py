@@ -148,7 +148,7 @@ def new_reserved_lab():
     date = json['date']
     block = json['block']
 
-    reserved_lab = ReservedCartModel(full_name=full_name,
+    reserved_lab = ReservedLabModel(full_name=full_name,
                                       department=department,
                                       lab_number=lab_number,
                                       device_quantity=device_quantity,

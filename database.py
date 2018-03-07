@@ -22,3 +22,12 @@ class Database(object):
     @staticmethod
     def find_one(collection, query):
         return Database.DATABASE[collection].find_one(query)
+
+    @staticmethod
+    def delete_one(collection, query):
+        return Database.DATABASE[collection].delete_one(query)
+
+    @staticmethod
+    def get_all_instances(collection):
+        return [data for data in Database.find(collection=collection, query={})]
+

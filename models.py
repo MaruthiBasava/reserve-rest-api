@@ -37,8 +37,11 @@ class CartModel(object):
 
     @staticmethod
     def get_all_instances():
-        return [data for data in Database.find(collection=CartModel.__collection_id, query={})]
+        return Database.get_all_instances(CartModel.__collection_id)
 
+    @staticmethod
+    def delete_one(cart_number):
+        Database.delete_one(CartModel.__collection_id, query={'cartNumber': cart_number})
 
 class LabModel(object):
 
@@ -66,7 +69,11 @@ class LabModel(object):
 
     @staticmethod
     def get_all_instances():
-        return [data for data in Database.find(collection=LabModel.__collection_id, query={})]
+        return Database.get_all_instances(LabModel.__collection_id)
+
+    @staticmethod
+    def delete_one(lab_number):
+        Database.delete_one(LabModel.__collection_id, query={'labNumber': lab_number})
 
 class TeacherModel(object):
 
@@ -106,7 +113,15 @@ class TeacherModel(object):
 
     @staticmethod
     def get_all_instances():
-        return [data for data in Database.find(collection=TeacherModel.__collection_id, query={})]
+        return Database.get_all_instances(TeacherModel.__collection_id)
+
+    @staticmethod
+    def delete_one(first_name, last_name, department):
+        Database.delete_one(TeacherModel.__collection_id,
+                            query={'firstName': first_name,
+                                   'lastName': last_name,
+                                   'department': department})
+
 
 class ReservedCartModel(object):
 
@@ -138,13 +153,14 @@ class ReservedCartModel(object):
     @classmethod
     def pull(
         cls,
-        department,
+        cart_number,
         date,
         block,
         ):
         data = Database.find_one(collection=cls.__collection_id,
-                                 query={'department': department,
-                                 'date': date, 'block': block})
+                                 query={'cartNumber': cart_number,
+                                        'date': date,
+                                        'block': block})
         return cls(
             full_name=data['fullName'],
             department=data['department'],
@@ -168,7 +184,14 @@ class ReservedCartModel(object):
 
     @staticmethod
     def get_all_instances():
-        return [data for data in Database.find(collection=ReservedCartModel.__collection_id, query={})]
+        return Database.get_all_instances(ReservedCartModel.__collection_id)
+
+    @staticmethod
+    def delete_one(cart_number, date, block):
+        Database.delete_one(ReservedCartModel.__collection_id,
+                            query={'cartNumber': cart_number,
+                                   'date': date,
+                                   'block': block})
 
 class ReservedLabModel(object):
 
@@ -176,7 +199,6 @@ class ReservedLabModel(object):
 
     def __init__(
         self,
-        _id,
         full_name,
         department,
         lab_number,
@@ -223,4 +245,11 @@ class ReservedLabModel(object):
 
     @staticmethod
     def get_all_instances():
-        return [data for data in Database.find(collection=ReservedLabModel.__collection_id, query={})]
+        return Database.get_all_instances(ReservedLabModel.__collection_id)
+
+    @staticmethod
+    def delete_one(lab_number, date, block):
+        Database.delete_one(ReservedLabModel.__collection_id,
+                            query={'labNumber': lab_number,
+                                   'date': date,
+                                   'block': block})
