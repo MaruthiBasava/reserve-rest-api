@@ -27,6 +27,7 @@ class CartModel(object):
     def pull(cls, cart_number):
         data = Database.find_one(collection=cls.__collection_id,
                                  query={'cartNumber': cart_number})
+
         return cls(cart_number=data['cartNumber'],
                    device_type=data['type'],
                    device_quantity=data['deviceQuantity'])
@@ -103,7 +104,7 @@ class TeacherModel(object):
     def pull(cls, last_name, department):
         data = Database.find_one(collection=cls.__collection_id,
                                  query={'lastName': last_name,
-                                 'department': department})
+                                        'department': department})
 
         return cls(first_name=data['firstName'],
                    last_name=data['lastName'],
@@ -122,8 +123,8 @@ class TeacherModel(object):
     def delete_one(first_name, last_name, department):
         Database.delete_one(TeacherModel.__collection_id,
                             query={'firstName': first_name,
-                            'lastName': last_name,
-                            'department': department})
+                                   'lastName': last_name,
+                                   'department': department})
 
 
 class ReservedCartModel(object):
@@ -163,7 +164,8 @@ class ReservedCartModel(object):
 
         data = Database.find_one(collection=cls.__collection_id,
                                  query={'cartNumber': cart_number,
-                                 'date': date, 'block': block})
+                                        'date': date,
+                                        'block': block})
         return cls(
             full_name=data['fullName'],
             department=data['department'],
@@ -193,7 +195,8 @@ class ReservedCartModel(object):
     def delete_one(cart_number, date, block):
         Database.delete_one(ReservedCartModel.__collection_id,
                             query={'cartNumber': cart_number,
-                            'date': date, 'block': block})
+                                   'date': date,
+                                   'block': block})
 
 
 class ReservedLabModel(object):
@@ -230,7 +233,8 @@ class ReservedLabModel(object):
         ):
         data = Database.find_one(collection=cls.__collection_id,
                                  query={'department': department,
-                                 'date': date, 'block': block})
+                                        'date': date,
+                                        'block': block})
         return cls(
             full_name=data['fullName'],
             department=data['department'],
@@ -258,4 +262,5 @@ class ReservedLabModel(object):
     def delete_one(lab_number, date, block):
         Database.delete_one(ReservedLabModel.__collection_id,
                             query={'labNumber': lab_number,
-                            'date': date, 'block': block})
+                                   'date': date,
+                                   'block': block})
