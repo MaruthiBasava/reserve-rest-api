@@ -11,7 +11,6 @@ class Database(object):
         client = pymongo.MongoClient(Database.URI)
         Database.DATABASE = client[Database.DATABASE_ID]
 
-
     @staticmethod
     def insert(collection, data):
         Database.DATABASE[collection].insert(data)

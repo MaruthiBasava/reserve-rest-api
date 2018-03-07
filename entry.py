@@ -4,13 +4,16 @@ from utilities import validate
 
 app = Flask(__name__)
 
+
 @app.route("/")
 def home():
     return "This is root directory"
 
+
 @app.route("/api/v1/carts", methods=['GET'])
 def get_carts():
     return jsonify({'carts': CartModel.get_all_instances()})
+
 
 @app.route("/api/v1/carts/new", methods=['POST'])
 def new_cart():
@@ -49,6 +52,21 @@ def new_lab():
 
     lab.push()
     return ""
+
+
+@app.route("/api/v1/teachers", methods=['GET'])
+def get_teachers():
+    return jsonify({'teachers': TeacherModel.get_all_instances()})
+
+
+@app.route("/api/v1/reservedCarts", methods=['GET'])
+def get_reserved_carts():
+    return jsonify({'reservedCarts': ReservedCartModel.get_all_instances()})
+
+
+@app.route("/api/v1/reservedLabs", methods=['GET'])
+def get_reserved_labs():
+    return jsonify({'reservedLabs': ReservedLabModel.get_all_instances()})
 
 if __name__ == '__main__':
     Database.initialize()
