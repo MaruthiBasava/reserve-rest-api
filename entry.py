@@ -1,3 +1,5 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 from flask import Flask, jsonify, request, abort
 from models import *
 from utilities import validate
@@ -5,17 +7,17 @@ from utilities import validate
 app = Flask(__name__)
 
 
-@app.route("/")
+@app.route('/')
 def home():
-    return "This is root directory"
+    return 'This is root directory'
 
 
-@app.route("/api/v1/carts", methods=['GET'])
+@app.route('/api/v1/carts', methods=['GET'])
 def get_carts():
     return jsonify({'carts': CartModel.get_all_instances()})
 
 
-@app.route("/api/v1/carts/new", methods=['POST'])
+@app.route('/api/v1/carts/new', methods=['POST'])
 def new_cart():
 
     json = request.get_json(force=True)
@@ -26,19 +28,30 @@ def new_cart():
     cart_number = json['cartNumber']
     device_type = json['type']
     device_quantity = json['deviceQuantity']
-    cart = CartModel(cart_number=cart_number,
-                     device_type=device_type,
+    cart = CartModel(cart_number=cart_number, device_type=device_type,
                      device_quantity=device_quantity)
     cart.push()
-    return ""
+    return ''
 
 
-@app.route("/api/v1/labs", methods=['GET'])
+@app.route('/api/v1/carts/delete', methods=['DELETE'])
+def delete_cart():
+    json = request.get_json(force=True)
+
+    if not validate(json, 'cartNumber'):
+        abort(403)
+
+    CartModel.delete_one(json['cartNumber'])
+
+    return ''
+
+
+@app.route('/api/v1/labs', methods=['GET'])
 def get_labs():
     return jsonify({'labs': LabModel.get_all_instances()})
 
 
-@app.route("/api/v1/labs/new", methods=['POST'])
+@app.route('/api/v1/labs/new', methods=['POST'])
 def new_lab():
 
     json = request.get_json(force=True)
@@ -53,15 +66,27 @@ def new_lab():
                    device_quantity=device_quantity)
 
     lab.push()
-    return ""
+    return ''
 
 
-@app.route("/api/v1/teachers", methods=['GET'])
+@app.route('/api/v1/labs/delete', methods=['DELETE'])
+def delete_lab():
+    json = request.get_json(force=True)
+
+    if not validate(json, 'labNumber'):
+        abort(403)
+
+    LabModel.delete_one(json['labNumber'])
+
+    return ''
+
+
+@app.route('/api/v1/teachers', methods=['GET'])
 def get_teachers():
     return jsonify({'teachers': TeacherModel.get_all_instances()})
 
 
-@app.route("/api/v1/teachers/new", methods=['POST'])
+@app.route('/api/v1/teachers/new', methods=['POST'])
 def new_teacher():
 
     json = request.get_json(force=True)
@@ -73,32 +98,46 @@ def new_teacher():
     last_name = json['lastName']
     department = json['department']
 
-    teacher = LabModel(first_name=first_name,
-                       last_name=last_name,
+    teacher = LabModel(first_name=first_name, last_name=last_name,
                        department=department)
 
     teacher.push()
-    return ""
+    return ''
 
 
-@app.route("/api/v1/reservedCarts", methods=['GET'])
+@app.route('/api/v1/teachers/delete', methods=['DELETE'])
+def delete_teacher():
+    json = request.get_json(force=True)
+
+    if not validate(json, 'firstName', 'lastName', 'department'):
+        abort(403)
+
+    TeacherModel.delete_one(json['firstName'], json['lastName'],
+                            json['department'])
+
+    return ''
+
+
+@app.route('/api/v1/reservedCarts', methods=['GET'])
 def get_reserved_carts():
     return jsonify({'reservedCarts': ReservedCartModel.get_all_instances()})
 
 
-@app.route("/api/v1/reservedCarts/new", methods=['POST'])
+@app.route('/api/v1/reservedCarts/new', methods=['POST'])
 def new_reserved_cart():
 
     json = request.get_json(force=True)
 
-    if not validate(json,
-                    'fullName',
-                    'department',
-                    'cartNumber',
-                    'deviceType',
-                    'deviceQuantity',
-                    'date',
-                    'block'):
+    if not validate(
+        json,
+        'fullName',
+        'department',
+        'cartNumber',
+        'deviceType',
+        'deviceQuantity',
+        'date',
+        'block',
+        ):
         abort(400)
 
     full_name = json['fullName']
@@ -109,36 +148,53 @@ def new_reserved_cart():
     date = json['date']
     block = json['block']
 
-    reserved_cart = ReservedCartModel(full_name=full_name,
-                                      department=department,
-                                      cart_number=cart_number,
-                                      device_type=device_type,
-                                      device_quantity=device_quantity,
-                                      date=date,
-                                      block=block)
+    reserved_cart = ReservedCartModel(
+        full_name=full_name,
+        department=department,
+        cart_number=cart_number,
+        device_type=device_type,
+        device_quantity=device_quantity,
+        date=date,
+        block=block,
+        )
 
     reserved_cart.push()
 
-    return ""
+    return ''
 
 
-@app.route("/api/v1/reservedLabs", methods=['GET'])
+@app.route('/api/v1/reservedCarts/delete', methods=['DELETE'])
+def delete_reserved_cart():
+    json = request.get_json(force=True)
+
+    if not validate(json, 'cartNumber', 'date', 'block'):
+        abort(403)
+
+    ReservedCartModel.delete_one(json['cartNumber'], json['date'],
+                                 json['block'])
+
+    return ''
+
+
+@app.route('/api/v1/reservedLabs', methods=['GET'])
 def get_reserved_labs():
     return jsonify({'reservedLabs': ReservedLabModel.get_all_instances()})
 
 
-@app.route("/api/v1/reservedLabs/new", methods=['POST'])
+@app.route('/api/v1/reservedLabs/new', methods=['POST'])
 def new_reserved_lab():
 
     json = request.get_json(force=True)
 
-    if not validate(json,
-                    'fullName',
-                    'department',
-                    'labNumber',
-                    'deviceQuantity',
-                    'date',
-                    'block'):
+    if not validate(
+        json,
+        'fullName',
+        'department',
+        'labNumber',
+        'deviceQuantity',
+        'date',
+        'block',
+        ):
         abort(400)
 
     full_name = json['fullName']
@@ -148,16 +204,31 @@ def new_reserved_lab():
     date = json['date']
     block = json['block']
 
-    reserved_lab = ReservedLabModel(full_name=full_name,
-                                      department=department,
-                                      lab_number=lab_number,
-                                      device_quantity=device_quantity,
-                                      date=date,
-                                      block=block)
+    reserved_lab = ReservedLabModel(
+        full_name=full_name,
+        department=department,
+        lab_number=lab_number,
+        device_quantity=device_quantity,
+        date=date,
+        block=block,
+        )
 
     reserved_lab.push()
 
-    return ""
+    return ''
+
+
+@app.route('/api/v1/reservedLabs/delete', methods=['DELETE'])
+def delete_reserved_lab():
+    json = request.get_json(force=True)
+
+    if not validate(json, 'labNumber', 'date', 'block'):
+        abort(403)
+
+    ReservedLabModel.delete_one(json['labNumber'], json['date'],
+                                json['block'])
+
+    return ''
 
 if __name__ == '__main__':
     Database.initialize()

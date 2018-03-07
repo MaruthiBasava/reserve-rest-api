@@ -30,4 +30,3 @@ class Database(object):
     @staticmethod
     def get_all_instances(collection):
         return [data for data in Database.find(collection=collection, query={})]
-
