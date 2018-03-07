@@ -3,7 +3,6 @@
 
 from database import Database
 
-
 class CartModel(object):
 
     __collection_id = 'carts'
@@ -23,10 +22,22 @@ class CartModel(object):
         Database.insert(collection=self.__collection_id,
                         data=self.jsonify())
 
+    @classmethod
+    def pull(cls, cart_number):
+        data = Database.find_one(collection=cls.__collection_id,
+                                 query={'cartNumber': cart_number})
+        return cls(cart_number=data['cartNumber'],
+                   device_type=data['type'],
+                   device_quantity=data['deviceQuantity'])
+
     def jsonify(self):
         return {'cartNumber': self.cart_number,
                 'type': self.device_type,
                 'deviceQuantity': self.device_quantity}
+
+    @staticmethod
+    def get_all_instances():
+        return [data for data in Database.find(collection=CartModel.__collection_id, query={})]
 
 
 class LabModel(object):
@@ -41,10 +52,21 @@ class LabModel(object):
         Database.insert(collection=self.__collection_id,
                         data=self.jsonify())
 
+    @classmethod
+    def pull(cls, lab_number):
+        data = Database.find_one(collection=cls.__collection_id,
+                                 query={'labNumber': lab_number})
+
+        return cls(lab_number=data['labNumber'],
+                   device_quantity=data['deviceQuantity'])
+
     def jsonify(self):
         return {'labNumber': self.lab_number,
                 'deviceQuantity': self.device_quantity}
 
+    @staticmethod
+    def get_all_instances():
+        return [data for data in Database.find(collection=LabModel.__collection_id, query={})]
 
 class TeacherModel(object):
 
@@ -65,11 +87,26 @@ class TeacherModel(object):
         Database.insert(collection=self.__collection_id,
                         data=self.jsonify())
 
-    def jsonify(self):
-        return {'firstName': self.cart_number,
-                'lastName': self.device_type,
-                'department': self.department}
+    @classmethod
+    def pull(cls, last_name, department):
+        data = Database.find_one(collection=cls.__collection_id,
+                                 query={'lastName': last_name,
+                                 'department': department})
+        return cls(cart_number=data['cartNumber'],
+                   device_type=data['type'],
+                   device_quantity=data['deviceQuantity'])
 
+    def jsonify(self):
+        return {
+            'id': self._id,
+            'firstName': self.cart_number,
+            'lastName': self.device_type,
+            'department': self.department,
+            }
+
+    @staticmethod
+    def get_all_instances():
+        return [data for data in Database.find(collection=TeacherModel.__collection_id, query={})]
 
 class ReservedCartModel(object):
 
@@ -98,6 +135,26 @@ class ReservedCartModel(object):
         Database.insert(collection=self.__collection_id,
                         data=self.jsonify())
 
+    @classmethod
+    def pull(
+        cls,
+        department,
+        date,
+        block,
+        ):
+        data = Database.find_one(collection=cls.__collection_id,
+                                 query={'department': department,
+                                 'date': date, 'block': block})
+        return cls(
+            full_name=data['fullName'],
+            department=data['department'],
+            cart_number=data['cartNumber'],
+            device_type=data['deviceType'],
+            device_quantity=data['deviceQuantity'],
+            date=data['date'],
+            block=data['block'],
+            )
+
     def jsonify(self):
         return {
             'fullName': self.full_name,
@@ -109,6 +166,9 @@ class ReservedCartModel(object):
             'block': self.block,
             }
 
+    @staticmethod
+    def get_all_instances():
+        return [data for data in Database.find(collection=ReservedCartModel.__collection_id, query={})]
 
 class ReservedLabModel(object):
 
@@ -116,6 +176,7 @@ class ReservedLabModel(object):
 
     def __init__(
         self,
+        _id,
         full_name,
         department,
         lab_number,
@@ -135,6 +196,21 @@ class ReservedLabModel(object):
         Database.insert(collection=self.__collection_id,
                         data=self.jsonify())
 
+    @classmethod
+    def pull(cls, department, date, block):
+        data = Database.find_one(collection=cls.__collection_id,
+                                 query={'department': department,
+                                        'date': date,
+                                        'block': block})
+        return cls(
+            full_name=data['fullName'],
+            department=data['department'],
+            lab_number=data['labNumber'],
+            device_quantity=data['deviceQuantity'],
+            date=data['date'],
+            block=data['block'],
+            )
+
     def jsonify(self):
         return {
             'fullName': self.full_name,
@@ -144,3 +220,7 @@ class ReservedLabModel(object):
             'date': self.date,
             'block': self.block,
             }
+
+    @staticmethod
+    def get_all_instances():
+        return [data for data in Database.find(collection=ReservedLabModel.__collection_id, query={})]
