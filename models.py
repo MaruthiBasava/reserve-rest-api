@@ -91,14 +91,14 @@ class TeacherModel(object):
     def pull(cls, last_name, department):
         data = Database.find_one(collection=cls.__collection_id,
                                  query={'lastName': last_name,
-                                 'department': department})
-        return cls(cart_number=data['cartNumber'],
-                   device_type=data['type'],
-                   device_quantity=data['deviceQuantity'])
+                                        'department': department})
+
+        return cls(first_name=data['firstName'],
+                   last_name=data['lastName'],
+                   department=data['department'])
 
     def jsonify(self):
         return {
-            'id': self._id,
             'firstName': self.cart_number,
             'lastName': self.device_type,
             'department': self.department,
